@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+    <title>TaskFlow Dashboard</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link
+      rel="stylesheet"
+      href="style.css">
+
+    <!-- Chart.js for analytics graph -->
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/chart.js">
+    </script>
+
+</head>
+
+<body>
+
+  <div class="dashboard">
+
+    <!-- Sidebar -->
+
+      <div class="sidebar">
+        <div class="logo">
+          <h2>TaskFlow</h2>
+        </div>
+
+          <ul>
+            <li class="active" onclick="showSection('dashboard',this)">
+              <i class="fa-solid fa-house"></i>
+                  Dashboard
+            </li>
+            <li onclick="showSection('analytics',this)">
+              <i class="fa-solid fa-chart-line"></i>
+                Analytics
+            </li>
+
+
+                <li onclick="showSection('settings',this)">
+
+                    <i class="fa-solid fa-gear"></i>
+
+                    Settings
+
+                </li>
+
+            </ul>
+
+        </div>
+
+
+
+        <!-- Main Content -->
+
+        <div class="main">
+
+
+            <!-- Dashboard -->
+
+            <div
+                id="dashboardSection"
+                class="section active-section">
+
+
+                <!-- Top Bar -->
+
+                <div class="topbar">
+
+                    <div class="search-box">
+
+                        <i class="fa-solid fa-search"></i>
+
+                        <input
+                            type="text"
+                            id="search"
+                            placeholder="Search tasks...">
+
+                    </div>
+
+
+                    <div
+                        class="clock"
+                        id="clock"
+                    ></div>
+
+                </div>
+
+
+
+                <!-- Stats -->
+
+                <div class="stats">
+
+                    <div
+                        class="card"
+                        onclick="filterTasks('all')"
+                    >
+
+                        <h2 id="total">
+                            0
+                        </h2>
+
+                        <p>
+                            Total Tasks
+                        </p>
+
+                    </div>
+
+
+                    <div
+                        class="card"
+                        onclick="filterTasks('completed')"
+                    >
+
+                        <h2 id="completed">
+                            0
+                        </h2>
+
+                        <p>
+                            Completed
+                        </p>
+
+                    </div>
+
+
+                    <div
+                        class="card"
+                        onclick="filterTasks('pending')"
+                    >
+
+                        <h2 id="pending">
+                            0
+                        </h2>
+
+                        <p>
+                            Pending
+                        </p>
+
+                    </div>
+
+
+                    <div class="card">
+
+                        <h2 id="progressText">
+                            0%
+                        </h2>
+
+                        <p>
+                            Progress
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Add Task -->
+
+                <div class="task-input">
+
+                    <input
+                        type="text"
+                        id="taskInput"
+                        placeholder="Add task..."
+                    >
+
+
+                    <input
+                        type="date"
+                        id="dueDate"
+                    >
+
+
+                    <select id="priority">
+
+                        <option value="high">
+                            High
+                        </option>
+
+                        <option value="medium">
+                            Medium
+                        </option>
+
+                        <option value="low">
+                            Low
+                        </option>
+
+                    </select>
+
+
+                    <button
+                        onclick="addTask()"
+                    >
+
+                        Add Task
+
+                    </button>
+
+                </div>
+
+
+
+                <!-- Progress Bar -->
+
+                <div class="progress-section">
+
+                    <div class="progress">
+
+                        <div
+                            class="progress-bar"
+                            id="bar"
+                        ></div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Task List -->
+
+                <div
+                    id="taskList"
+                ></div>
+
+
+            </div>
+
+
+
+
+            <!-- Analytics -->
+
+            <div
+      id="analyticsSection"
+      class="section"
+  >
+
+      <div class="stats">
+
+          <div
+              class="card"
+              onclick="showPriorityTasks('high')"
+          >
+              <h2 id="highCount">0</h2>
+              <p>High Priority</p>
+          </div>
+
+          <div
+              class="card"
+              onclick="showPriorityTasks('medium')"
+          >
+              <h2 id="mediumCount">0</h2>
+              <p>Medium Priority</p>
+          </div>
+
+          <div
+              class="card"
+              onclick="showPriorityTasks('low')"
+          >
+              <h2 id="lowCount">0</h2>
+              <p>Low Priority</p>
+          </div>
+
+      </div>
+
+      <div class="card">
+
+          <h2>
+              Overall Task Progress
+          </h2>
+
+          <div id="overallGraph"></div>
+
+      </div>
+
+      <br>
+
+      <div class="card">
+
+          <h2>
+              Priority Distribution
+          </h2>
+
+          <div id="priorityGraph"></div>
+
+      </div>
+
+  </div>
+
+
+
+
+              <!-- Settings -->
+
+              <div
+                id="settingsSection"
+                class="section"
+            >
+
+            <div class="settings-grid">
+
+            <div class="setting-card">
+
+            <h3>
+            🎨 Appearance
+            </h3>
+
+            <p>
+            Switch dark/light mode
+            </p>
+
+            <button onclick="toggleTheme()">
+            Change Theme
+            </button>
+
+            </div>
+
+
+            <div class="setting-card">
+
+            <h3>
+            📁 Backup
+            </h3>
+
+            <p>
+            Export or import tasks
+            </p>
+
+            <button onclick="exportTasks()">
+            Export
+            </button>
+
+            <button onclick="importTasks()">
+            Import
+            </button>
+
+            </div>
+
+
+            <div class="setting-card">
+
+            <h3>
+            🗑 Task Control
+            </h3>
+
+            <p>
+            Manage task storage
+            </p>
+
+            <button onclick="clearAllTasks()">
+            Clear Tasks
+            </button>
+
+            </div>
+
+
+            <div class="setting-card">
+
+            <h3>
+            🔄 System
+            </h3>
+
+            <p>
+            Reset application
+            </p>
+
+            <button onclick="resetApp()">
+            Reset App
+            </button>
+
+            </div>
+
+            </div>
+
+            </div>
+
+
+
+    <!-- Edit Popup -->
+
+    <div
+        id="editModal"
+        class="modal"
+    >
+
+        <div class="modal-content">
+
+            <h2>
+                Edit Task
+            </h2>
+
+
+            <input
+                type="text"
+                id="editTaskInput"
+                placeholder="Update task..."
+            >
+
+
+            <div class="modal-buttons">
+
+                <button
+                    class="save-btn"
+                    onclick="saveEditedTask()"
+                >
+                    Save
+                </button>
+
+
+                <button
+                    class="cancel-btn"
+                    onclick="closeModal()"
+                >
+                    Cancel
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>
